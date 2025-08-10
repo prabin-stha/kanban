@@ -14,16 +14,12 @@ export const auth = betterAuth({
   socialProviders: {
     google: {
       prompt: "select_account",
-      redirectURI: env.CORS_ORIGIN,
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     },
   },
   plugins: [oneTap()],
   trustedOrigins: [env.CORS_ORIGIN],
-  emailAndPassword: {
-    enabled: true,
-  },
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL,
 });
