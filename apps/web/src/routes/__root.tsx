@@ -1,23 +1,22 @@
-import Header from "@/components/header";
-import Loader from "@/components/loader";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
-import { link, orpc } from "@/utils/orpc";
-import type { QueryClient } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { useState } from "react";
-import type { RouterClient } from "@orpc/server";
-import { createTanstackQueryUtils } from "@orpc/tanstack-query";
-import type { appRouter } from "../../../server/src/routers";
-import { createORPCClient } from "@orpc/client";
-import {
-  HeadContent,
-  Outlet,
-  createRootRouteWithContext,
-  useRouterState,
-} from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import "../index.css";
+
+import type { QueryClient } from "@tanstack/react-query";
+
+import {
+  Outlet,
+  HeadContent,
+  useRouterState,
+  createRootRouteWithContext,
+} from "@tanstack/react-router";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+
+import { Loader } from "@/components/loader";
+import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/providers/theme.provider";
+
+import { orpc } from "@/lib/orpc.lib";
+import { authClient } from "@/lib/auth-client.lib";
 
 export interface RouterAppContext {
   orpc: typeof orpc;
@@ -49,25 +48,24 @@ function RootComponent() {
   const isFetching = useRouterState({
     select: (s) => s.isLoading,
   });
+  const { isPending } = authClient.useSession();
 
-  const [client] = useState<RouterClient<typeof appRouter>>(() => createORPCClient(link));
-  const [orpcUtils] = useState(() => createTanstackQueryUtils(client));
+  if (isPending || isFetching) {
+    return null;
+  }
 
   return (
     <>
       <HeadContent />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          disableTransitionOnChange
-          storageKey="vite-ui-theme"
-        >
-          <div className="grid grid-rows-[auto_1fr] h-svh">
-            <Header />
-            {isFetching ? <Loader /> : <Outlet />}
-          </div>
-          <Toaster richColors />
-        </ThemeProvider>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="dark"
+        disableTransitionOnChange
+        storageKey="vite-ui-theme"
+      >
+        <Outlet />
+        <Toaster richColors />
+      </ThemeProvider>
       <TanStackRouterDevtools position="bottom-left" />
       <ReactQueryDevtools position="bottom" buttonPosition="bottom-right" />
     </>

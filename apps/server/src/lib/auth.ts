@@ -1,18 +1,25 @@
-
-
+import { env } from "cloudflare:workers";
 import { betterAuth } from "better-auth";
+import { oneTap } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+
 import { db } from "../db";
 import * as schema from "../db/schema/auth";
-import { env } from "cloudflare:workers";
 
 export const auth = betterAuth({
-   database: drizzleAdapter(db, {
-    
+  database: drizzleAdapter(db, {
     provider: "sqlite",
-    
     schema: schema,
   }),
+  socialProviders: {
+    google: {
+      prompt: "select_account",
+      redirectURI: env.CORS_ORIGIN,
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    },
+  },
+  plugins: [oneTap()],
   trustedOrigins: [env.CORS_ORIGIN],
   emailAndPassword: {
     enabled: true,
@@ -20,5 +27,3 @@ export const auth = betterAuth({
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL,
 });
-
-

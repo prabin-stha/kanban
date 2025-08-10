@@ -1,3 +1,4 @@
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,13 +7,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { authClient } from "@/lib/auth-client";
-import { useNavigate } from "@tanstack/react-router";
-import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
-import { Link } from "@tanstack/react-router";
 
-export default function UserMenu() {
+import { authClient } from "@/lib/auth-client.lib";
+import { useNavigate, Link } from "@tanstack/react-router";
+
+export function UserMenu() {
   const navigate = useNavigate();
   const { data: session, isPending } = authClient.useSession();
 
@@ -23,7 +23,7 @@ export default function UserMenu() {
   if (!session) {
     return (
       <Button variant="outline" asChild>
-        <Link to="/login">Sign In</Link>
+        <Link to="/sign-in">Sign In</Link>
       </Button>
     );
   }
@@ -46,7 +46,7 @@ export default function UserMenu() {
                 fetchOptions: {
                   onSuccess: () => {
                     navigate({
-                      to: "/",
+                      to: "/sign-in",
                     });
                   },
                 },
