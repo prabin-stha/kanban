@@ -16,11 +16,13 @@ function RouteComponent() {
   const privateData = useQuery(orpc.privateData.queryOptions());
 
   return (
-    <div>
+    <>
       <Header />
-      <h1>Dashboard</h1>
-      <p>Welcome {session?.user.name}</p>
-      <pre>{JSON.stringify(privateData.data, null, 2)}</pre>
-    </div>
+      <div className="container mx-auto px-4 py-8">
+        <h1>Dashboard</h1>
+        <p>Welcome {session?.user.name}</p>
+        <pre>{JSON.stringify(privateData.data, null, 2)}</pre>
+      </div>
+    </>
   );
 }

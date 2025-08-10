@@ -11,6 +11,7 @@ import { Skeleton } from "./ui/skeleton";
 
 import { authClient } from "@/lib/auth-client.lib";
 import { useNavigate, Link } from "@tanstack/react-router";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export function UserMenu() {
   const navigate = useNavigate();
@@ -31,7 +32,14 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">{session.user.name}</Button>
+        <Avatar className="cursor-pointer">
+          <AvatarImage src={session.user.image} />
+          <AvatarFallback>
+            <span className="text-sm">
+              {getFallbackPrefix(session.user.name)}
+            </span>
+          </AvatarFallback>
+        </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-card">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -59,4 +67,11 @@ export function UserMenu() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
+}
+
+function getFallbackPrefix(name: string) {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("");
 }
