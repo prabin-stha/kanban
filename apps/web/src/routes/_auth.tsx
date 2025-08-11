@@ -22,6 +22,8 @@ function RouteComponent() {
     init();
   }, []);
 
+  console.log({ env: import.meta.env, process: process.env });
+
   if (isAuthenticated) return <Navigate to="/" />;
 
   return (
